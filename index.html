@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>GifTastic HomeWork</title>
+
+    <style type="text/css">
+        button,
+        div,
+        form,
+        input {
+          margin: 10px;
+        }
+      </style>
+
+</head>
+<body>
+    <div class='container'>
+        <div class='col-md-6'>
+            <div class='giphy-goes-here'></div>
+        </div>
+        <div class='col-md-6'>
+        <h3>Singer Search</h3>
+
+    <div id="buttons-view"></div>
+
+    <form id="singer-form">
+        <label for="singer-input">Search a Singer!</label>
+        <input type="text" id="singer-input"><br>
+
+        <input id="add-singer" type="submit" value="Search a Singer">
+    </form>
+    </div>
+
+    </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+    var topics =['Beyonce', 'Justin Timberlake'];
+
+    function alertSinger() {
+        var singerName = $(this).attr("data-name");
+
+        alert(singerName);
+      }
+
+            function singerSearch(){
+                var singerName = $(this).attr('data-name');
+            }
+            $("#buttons-view").empty();
+
+            function renderButtons(){
+                for (var i = 0; i < topics.length; i++) {
+                var a = $("<button>");
+                a.addClass("singer");
+                a.attr("data-name", topics[i]);
+                a.text(topics[i]);
+                $("#buttons-view").append(a);  
+                }
+            }
+            $("#add-singer").on("click", function(event) {
+            event.preventDefault();
+            var singer = $("#singer-input").val().trim();
+            topics.push(singer);
+            renderButtons();
+
+      });
+      $(document).on("click", ".singer", alertSinger);
+
+      renderButtons();
+
+
+      var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
+        topics + "&api_key=GwT6g3FCOQLn7H8YzF17GesNU0AIanPI";
+
+  		$.ajax({
+  			url: queryURL,
+  			method: "GET" 
+
+  		}).done(function(response){
+  			console.log(response);
+  			
+          	var results = response.data;
+
+          	for (var i = 0; i < topics.length; i++) {
+	          	var topicDiv = $("<div>");
+	 			
+	 			var p = $("<p>");
+	 			p.text(topics[i].rating);
+	 			var p = $("<p>").text("Rating: " + topics[i].rating);
+ 
+                var topicImage = $("<img>").addClass("orangeBorder");
+
+                topicImage.attr("src", topics[i].images.fixed_height_still.url);
+	 			topicImage.attr("data-still", topics[i].images.fixed_height_still.url);
+	 			topicImage.attr("data-animate", topics[i].images.fixed_height.url)
+	 			topicImage.attr("data-state", "still")
+                topicImage.addClass("gif");
+                 
+	 			topicDiv.append(topicImage);
+	 			topicDiv.append(p); 			
+	 			
+	 			$("#gifArea").prepend(topicDiv);
+                 }
+  		});
+    
+</script>
+</body>
+</html>
